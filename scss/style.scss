@@ -1,0 +1,62 @@
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.root {
+	display: grid;
+	grid-template-areas: "char editor" "char preview";
+	grid-template-columns: 200px;
+
+	height: 100vh;
+
+	> .root-char {
+		grid-area: char;
+
+		height: 100vh;
+		overflow: auto;
+	}
+
+	> .root-editor {
+		grid-area: editor;
+	}
+	
+}
+
+.root-char {
+	border-right: 1px solid gray;
+
+	> .char {
+		display: flex;
+		border-bottom: 1px solid gray;
+
+		table {
+			width: 40px;
+			height: 40px;
+		}
+
+		&:hover {
+			background-color: #eee;
+		}
+	}
+}
+
+.glyph-table-container {
+	table {
+		border-collapse: collapse;
+	}
+
+	.filled {
+		background-color: black;
+	}
+}
+
+.root-editor {
+	.glyph-table-container {
+		td {
+			border: 1px solid gray;
+			width: 10px;
+			height: 10px;
+		}
+	}
+}
