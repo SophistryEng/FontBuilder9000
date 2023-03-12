@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx sass scss:style && npx webpack --mode=production"
   },
   "author": "Jesse G. Donat",
   "license": "MIT",
