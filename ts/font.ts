@@ -32,6 +32,10 @@ export class Glyph {
 		this.data[row * this.columns + column] = value;
 		this.updateEmitter.trigger();
 	}
+
+	public clear() {
+		this.setData(new Array(this.rows * this.columns).fill(false));
+	}
 }
 
 
@@ -114,6 +118,11 @@ export class Char {
 		}
 	}
 
+	public clear() {
+		for (const glyph of this.glyphs) {
+			glyph.clear();
+		}
+	}
 }
 
 export class CharCollection {
@@ -160,5 +169,11 @@ export class CharCollection {
 			let char = this.chars[code];
 			char.deserialize(charText);
 		});
+	}
+
+	public clear() {
+		for (const char of this.chars) {
+			char.clear();
+		}
 	}
 }

@@ -33,14 +33,14 @@ export const init = (async (root: HTMLElement) => {
 		return new Char(index);
 	});
 
-	let storage = new CharCollection(chars);
+	let collection = new CharCollection(chars);
 	
 	let cancelable : ReturnType<typeof setTimeout>;
-	storage.updateEmitter.add(() => {
+	collection.updateEmitter.add(() => {
 		clearTimeout(cancelable);
 		cancelable = setTimeout(() => {
 			console.log('saving to local storage');
-			localStorage.setItem(localStorageKey, storage.serialize());
+			localStorage.setItem(localStorageKey, collection.serialize());
 		}, 800);
 	});
 
@@ -84,8 +84,18 @@ export const init = (async (root: HTMLElement) => {
 
 	const saved = localStorage.getItem(localStorageKey);
 	if (saved) {
-		storage.deserialize(saved);
+		collection.deserialize(saved);
 	}
+
+	const clearButton = document.createElement('button');
+	clearButton.appendChild(document.createTextNode('Reset Font'));
+	clearButton.addEventListener('click', () => {
+		if( confirm('Are you sure you want to completely reset the font?') ) {
+			collection.clear();
+		}
+	});
+
+	header.appendChild(clearButton);
 
 });
 
