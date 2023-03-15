@@ -150,9 +150,17 @@ export class CharCollection {
 		});
 	}
 
+	public getChar(char: string): Char {
+		let code = char.charCodeAt(0);
+		if (!this.chars[code]) {
+			throw new Error('Char not found');
+		}
+
+		return this.chars[code];
+	}
+
 	public serialize(): string {
 		let x = this.chars.map((char) => char.serialize());
-		console.log(x);
 
 		return JSON.stringify(x);
 	}

@@ -5,13 +5,12 @@ export class GlyphTable {
 	protected readonly container = document.createElement('div');
 
 	constructor(
-		private glyph: Glyph,
+		protected glyph: Glyph,
 	) {
 		this.container.className = 'glyph-table-container';
 		this.render();
 
 		this.glyph.updateEmitter.add(() => {
-			console.log('x');
 			this.render();
 		});
 	}
@@ -20,7 +19,7 @@ export class GlyphTable {
 		return this.container;
 	}
 
-	private render() {
+	protected render() {
 		this.container.innerHTML = '';
 		let data = this.glyph.getData();
 
@@ -47,7 +46,7 @@ export class GlyphTable {
 
 }
 
-export class EditableGlyphTable extends GlyphTable  {
+export class EditableGlyphTable extends GlyphTable {
 
 	constructor(
 		glyph: Glyph,
@@ -55,11 +54,9 @@ export class EditableGlyphTable extends GlyphTable  {
 		super(glyph);
 
 		this.container.addEventListener('mousedown', (event: MouseEvent) => {
-			console.log('down');
 
 			let flipped: boolean[] = [];
 			const over = (event: MouseEvent) => {
-				console.log('over');
 				const target = event.target as HTMLElement;
 				if (target.tagName === 'TD') {
 					const row = parseInt(target.dataset.row || '0', 10);
@@ -78,13 +75,25 @@ export class EditableGlyphTable extends GlyphTable  {
 			this.container.addEventListener('mouseover', over);
 
 			const up = () => {
-				console.log('up');
 				document.removeEventListener('mouseup', up);
 				this.container.removeEventListener('mouseover', over);
 			}
 
 			document.addEventListener('mouseup', up);
 		});
+	}
+
+	protected render() {
+		super.render();
+
+		let clear = document.createElement('button');
+		clear.innerText = 'Clear';
+
+		clear.addEventListener('click', () => {
+			this.glyph.clear();
+		});
+
+		this.container.appendChild(clear);
 	}
 
 }

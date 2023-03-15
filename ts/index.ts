@@ -2,7 +2,13 @@ import { ASCII } from "./ascii"
 import { Char, CharCollection } from "./font";
 import { EditableGlyphTable, GlyphTable } from "./table";
 
-// const defaultSentence = 'My faxed joke won a pager in the cable TV quiz show.';
+const defaultSentences = [
+	'My faxed joke won a pager in the cable TV quiz show.',
+	'Sphinx of black quartz, judge my vow',
+	'Jackdaws love my big sphinx of quartz',
+	'Cozy lummox gives smart squid who asks for job pen',
+	'How vexingly quick daft zebras jump!',
+];
 
 const localStorageKey = 'working-font';
 
@@ -34,8 +40,8 @@ export const init = (async (root: HTMLElement) => {
 	});
 
 	let collection = new CharCollection(chars);
-	
-	let cancelable : ReturnType<typeof setTimeout>;
+
+	let cancelable: ReturnType<typeof setTimeout>;
 	collection.updateEmitter.add(() => {
 		clearTimeout(cancelable);
 		cancelable = setTimeout(() => {
@@ -51,7 +57,8 @@ export const init = (async (root: HTMLElement) => {
 
 		const charName = document.createElement('div');
 		charName.className = 'name';
-		charName.appendChild(document.createTextNode(char.getName()));
+		const dechex = (n: number) => n.toString(16).padStart(2, '0');
+		charName.appendChild(document.createTextNode(`${dechex(char.code)}: ${char.getName()}`));
 		charElement.appendChild(charName);
 
 		const editorTables: GlyphTable[] = [];
@@ -64,7 +71,9 @@ export const init = (async (root: HTMLElement) => {
 			charElement.appendChild(previewTable.getTable());
 		}
 
-		charElement.addEventListener('click', () => {
+		const select = () => {
+			charElement.scrollIntoView({ behavior: 'smooth' });
+
 			charContainer.querySelectorAll('.selected').forEach((e) => {
 				e.classList.remove('selected');
 			});
@@ -79,6 +88,14 @@ export const init = (async (root: HTMLElement) => {
 			for (const table of editorTables) {
 				editorContainer.appendChild(table.getTable());
 			}
+		};
+
+		charElement.addEventListener('click', select);
+
+		document.addEventListener('keyup', (e) => {
+			if (e.key === char.getName()) {
+				select();
+			}
 		});
 	}
 
@@ -90,12 +107,56 @@ export const init = (async (root: HTMLElement) => {
 	const clearButton = document.createElement('button');
 	clearButton.appendChild(document.createTextNode('Reset Font'));
 	clearButton.addEventListener('click', () => {
-		if( confirm('Are you sure you want to completely reset the font?') ) {
+		if (confirm('Are you sure you want to completely reset the font?')) {
 			collection.clear();
 		}
 	});
 
 	header.appendChild(clearButton);
+
+	let previewElm = document.createElement('div');
+	previewElm.className = 'root-preview';
+	root.appendChild(previewElm);
+
+	let previewText = document.createElement('input');
+	previewElm.innerHTML = '<h2>Preview</h2>';
+	previewText.value = defaultSentences[Math.floor(Math.random() * defaultSentences.length)];
+	previewElm.appendChild(previewText);
+
+	let previewContainer = document.createElement('div');
+	previewContainer.className = 'preview-container';
+	previewElm.appendChild(previewContainer);
+
+	const renderPreview = () => {
+		previewContainer.innerHTML = '';
+
+		for (const size of glphySizes) {
+			const previewOutput = document.createElement('div');
+			previewOutput.className = `font-preview`;
+
+			previewContainer.appendChild(previewOutput);
+
+			previewText.value.split('').forEach((char) => {
+				const c = collection.getChar(char);
+				const g = c.getGlyph(size.rows, size.columns);
+
+				const p = new GlyphTable(g);
+				previewOutput.appendChild(p.getTable());
+
+				// hack to add space between characters
+				let space = document.createElement('div');
+				space.className = 'glyph-table-container';
+				space.innerHTML = '<table><tr><td></td></tr></table>';
+
+				previewOutput.appendChild(space);
+
+			});
+		}
+	};
+
+	previewText.addEventListener('input', renderPreview);
+
+	renderPreview();
 
 });
 
