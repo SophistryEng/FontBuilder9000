@@ -15,6 +15,12 @@ export const init = (async (root: HTMLElement) => {
 	root.innerHTML = '';
 	root.className = 'root';
 
+	const header = document.createElement('header');
+	header.innerHTML = '<h1>µChord FontBuilder 9000</h1>';
+	header.className = 'root-header';
+
+	root.appendChild(header);
+
 	const editorContainer = document.createElement('div');
 	editorContainer.className = 'root-editor';
 	root.appendChild(editorContainer);
@@ -59,7 +65,16 @@ export const init = (async (root: HTMLElement) => {
 		}
 
 		charElement.addEventListener('click', () => {
+			charContainer.querySelectorAll('.selected').forEach((e) => {
+				e.classList.remove('selected');
+			});
+			charElement.classList.add('selected');
+
 			editorContainer.innerHTML = '';
+
+			const h2 = document.createElement('h2')
+			h2.appendChild(document.createTextNode(char.getName()));
+			editorContainer.appendChild(h2);
 
 			for (const table of editorTables) {
 				editorContainer.appendChild(table.getTable());
