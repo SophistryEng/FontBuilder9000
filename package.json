@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx sass scss:style && npx webpack --mode=production"
+    "build": "npx sass scss:style && npx webpack --mode=production",
+    "lint": "npx tslint --project ."
   },
   "author": "Jesse G. Donat",
   "license": "MIT",
