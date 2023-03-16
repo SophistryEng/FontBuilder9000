@@ -21,16 +21,16 @@ export class GlyphTable {
 
 	protected render() {
 		this.container.innerHTML = '';
-		let data = this.glyph.getData();
+		const data = this.glyph.getData();
 
 		const table = document.createElement('table');
 		this.container.appendChild(table);
 
 		for (let row = 0; row < this.glyph.rows; row++) {
-			let tr = document.createElement('tr');
+			const tr = document.createElement('tr');
 			for (let column = 0; column < this.glyph.columns; column++) {
-				let td = document.createElement('td');
-				let filled = data[row * this.glyph.columns + column];
+				const td = document.createElement('td');
+				const filled = data[row * this.glyph.columns + column];
 				if (filled) {
 					td.className = 'filled';
 				}
@@ -55,9 +55,9 @@ export class EditableGlyphTable extends GlyphTable {
 
 		this.container.addEventListener('mousedown', (event: MouseEvent) => {
 
-			let flipped: boolean[] = [];
-			const over = (event: MouseEvent) => {
-				const target = event.target as HTMLElement;
+			const flipped: boolean[] = [];
+			const over = (overEvent: MouseEvent) => {
+				const target = overEvent.target as HTMLElement;
 				if (target.tagName === 'TD') {
 					const row = parseInt(target.dataset.row || '0', 10);
 					const column = parseInt(target.dataset.column || '0', 10);
@@ -86,7 +86,7 @@ export class EditableGlyphTable extends GlyphTable {
 	protected render() {
 		super.render();
 
-		let clear = document.createElement('button');
+		const clear = document.createElement('button');
 		clear.innerText = 'Clear';
 
 		clear.addEventListener('click', () => {

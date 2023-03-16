@@ -5,21 +5,21 @@ export class Glyph {
 
 	public readonly updateEmitter = new EventEmitter<void>();
 
-	private data: Boolean[] = [];
+	private data: boolean[] = [];
 
 	constructor(
 		public readonly rows: number,
 		public readonly columns: number,
-		data: Boolean[] = new Array(rows * columns).fill(false),
+		data: boolean[] = new Array(rows * columns).fill(false),
 	) {
 		this.setData(data);
 	}
 
-	public getData(): Boolean[] {
+	public getData(): boolean[] {
 		return this.data;
 	}
 
-	public setData(data: Boolean[]) {
+	public setData(data: boolean[]) {
 		if (this.rows * this.columns !== data.length) {
 			throw new Error('Invalid data length');
 		}
@@ -28,7 +28,7 @@ export class Glyph {
 		this.updateEmitter.trigger();
 	}
 
-	public setPixel(row: number, column: number, value: Boolean) {
+	public setPixel(row: number, column: number, value: boolean) {
 		this.data[row * this.columns + column] = value;
 		this.updateEmitter.trigger();
 	}
@@ -40,7 +40,7 @@ export class Glyph {
 
 
 interface SerializedGlyph {
-	data: Boolean[];
+	data: boolean[];
 	rows: number;
 	columns: number;
 }
@@ -79,10 +79,10 @@ export class Char {
 			}
 		}
 
-		const glyph = new Glyph(rows, columns);
-		this.addGlyph(glyph);
+		const newGlyph = new Glyph(rows, columns);
+		this.addGlyph(newGlyph);
 
-		return glyph;
+		return newGlyph;
 	}
 
 	public addGlyph(glyph: Glyph) {
@@ -93,7 +93,7 @@ export class Char {
 	}
 
 	public serialize(): string {
-		let x = this.glyphs.map<SerializedGlyph>((glyph) => {
+		const x = this.glyphs.map<SerializedGlyph>((glyph) => {
 			return {
 				data: glyph.getData(),
 				rows: glyph.rows,
@@ -105,7 +105,7 @@ export class Char {
 	}
 
 	public deserialize(data: string) {
-		let x = JSON.parse(data);
+		const x = JSON.parse(data);
 
 		for (const sglyph of x) {
 			if (!isSerializedGlyph(sglyph)) {
@@ -151,7 +151,7 @@ export class CharCollection {
 	}
 
 	public getChar(char: string): Char {
-		let code = char.charCodeAt(0);
+		const code = char.charCodeAt(0);
 		if (!this.chars[code]) {
 			throw new Error('Char not found');
 		}
@@ -160,13 +160,13 @@ export class CharCollection {
 	}
 
 	public serialize(): string {
-		let x = this.chars.map((char) => char.serialize());
+		const x = this.chars.map((char) => char.serialize());
 
 		return JSON.stringify(x);
 	}
 
 	public deserialize(data: string) {
-		let x = JSON.parse(data);
+		const x = JSON.parse(data);
 
 		x.forEach((charText: string, code: number) => {
 			if (!this.chars[code]) {
@@ -174,7 +174,7 @@ export class CharCollection {
 				this.add(new Char(code));
 			}
 
-			let char = this.chars[code];
+			const char = this.chars[code];
 			char.deserialize(charText);
 		});
 	}

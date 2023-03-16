@@ -39,7 +39,7 @@ export const init = (async (root: HTMLElement) => {
 		return new Char(index);
 	});
 
-	let collection = new CharCollection(chars);
+	const collection = new CharCollection(chars);
 
 	let cancelable: ReturnType<typeof setTimeout>;
 	collection.updateEmitter.add(() => {
@@ -114,16 +114,16 @@ export const init = (async (root: HTMLElement) => {
 
 	header.appendChild(clearButton);
 
-	let previewElm = document.createElement('div');
+	const previewElm = document.createElement('div');
 	previewElm.className = 'root-preview';
 	root.appendChild(previewElm);
 
-	let previewText = document.createElement('input');
+	const previewText = document.createElement('input');
 	previewElm.innerHTML = '<h2>Preview</h2>';
 	previewText.value = defaultSentences[Math.floor(Math.random() * defaultSentences.length)];
 	previewElm.appendChild(previewText);
 
-	let previewContainer = document.createElement('div');
+	const previewContainer = document.createElement('div');
 	previewContainer.className = 'preview-container';
 	previewElm.appendChild(previewContainer);
 
@@ -144,7 +144,7 @@ export const init = (async (root: HTMLElement) => {
 				previewOutput.appendChild(p.getTable());
 
 				// hack to add space between characters
-				let space = document.createElement('div');
+				const space = document.createElement('div');
 				space.className = 'glyph-table-container';
 				space.innerHTML = '<table><tr><td></td></tr></table>';
 
