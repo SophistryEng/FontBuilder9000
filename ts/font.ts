@@ -33,6 +33,29 @@ export class Glyph {
 		this.updateEmitter.trigger();
 	}
 
+	public exportHexBlob(): string {
+		const steps = Math.floor(this.data.length / 8);
+
+		let out = "";
+		for (let s = 0; s < steps; s++) {
+			let char = 0;
+			for (let i = 0; i <= 7; i++) {
+				char += this.data[i] ? 1 << i : 0;
+			}
+
+			let str = char.toString(16).toUpperCase();
+			if (str.length === 0) {
+				str = "00";
+			} else if (str.length === 1) {
+				str = "0" + str;
+			}
+
+			out += "0x" + str + ", ";
+		}
+
+		return "{" + out.replace(/, $/, "") + "}";
+	}
+
 	public clear() {
 		this.setData(new Array(this.rows * this.columns).fill(false));
 	}
@@ -177,6 +200,15 @@ export class CharCollection {
 			const char = this.chars[code];
 			char.deserialize(charText);
 		});
+	}
+
+	public exportHexBlob(rows: number, columns: number): string {
+		let output = "";
+		for (const char of this.chars) {
+			output += char.getGlyph(rows, columns).exportHexBlob() + ",\n";
+		}
+
+		return output.replace(/,\n$/, "");
 	}
 
 	public clear() {

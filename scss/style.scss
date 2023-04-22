@@ -19,9 +19,9 @@ h1, h2, h3, h4, h5, h6 {
 .root {
 	display: grid;
 	grid-template-areas: 
-		"header header"
-		"char editor" 
-		"char preview";
+		"header header output"
+		"char editor output" 
+		"char preview output";
 	grid-template-columns: 200px;
 	grid-template-rows: 60px 1fr;
 
@@ -42,6 +42,11 @@ h1, h2, h3, h4, h5, h6 {
 
 	> .root-preview {
 		grid-area: preview;
+	}
+
+	> .root-output {
+		grid-area: output;
+		overflow: auto;
 	}
 	
 }
@@ -104,6 +109,12 @@ h1, h2, h3, h4, h5, h6 {
 			background-color: #f08cc6;
 		}
 	}
+}
+
+.root-output {
+	border-left: 1px solid #eee;
+
+	display: grid;
 }
 
 .glyph-table-container {

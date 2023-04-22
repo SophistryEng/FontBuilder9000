@@ -35,6 +35,10 @@ export const init = (async (root: HTMLElement) => {
 	charContainer.className = 'root-char';
 	root.appendChild(charContainer);
 
+	const outputElm = document.createElement('div');
+	outputElm.className = 'root-output';
+	root.appendChild(outputElm);
+
 	const chars = ASCII.map((_, index) => {
 		return new Char(index);
 	});
@@ -47,6 +51,15 @@ export const init = (async (root: HTMLElement) => {
 		cancelable = setTimeout(() => {
 			console.log('saving to local storage');
 			localStorage.setItem(localStorageKey, collection.serialize());
+
+			outputElm.innerHTML = '';
+			for (const size of glphySizes) {
+				const ta = document.createElement('textarea');
+				ta.readOnly = true;
+				ta.innerText = collection.exportHexBlob(size.rows, size.columns);
+
+				outputElm.appendChild(ta);
+			}
 		}, 800);
 	});
 
