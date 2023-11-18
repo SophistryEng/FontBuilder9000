@@ -5,7 +5,7 @@ export class GlyphTable {
 	protected readonly container = document.createElement('div');
 
 	constructor(
-		protected glyph: Glyph,
+		protected glyph: Glyph
 	) {
 		this.container.className = 'glyph-table-container';
 		this.render();

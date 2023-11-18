@@ -56,7 +56,7 @@ export const init = (async (root: HTMLElement) => {
 			for (const size of glphySizes) {
 				const ta = document.createElement('textarea');
 				ta.readOnly = true;
-				ta.innerText = collection.exportHexBlob(size.rows, size.columns);
+				ta.value = collection.exportHexBlob(size.rows, size.columns);
 
 				outputElm.appendChild(ta);
 			}

@@ -33,24 +33,61 @@ export class Glyph {
 		this.updateEmitter.trigger();
 	}
 
-	public exportHexBlob(): string {
-		const steps = Math.floor(this.data.length / 8);
-
+	private exportHexBlob5x8(): string {
 		let out = "";
-		for (let s = 0; s < steps; s++) {
-			let char = 0;
-			for (let i = 0; i <= 7; i++) {
-				char += this.data[i] ? 1 << i : 0;
+		for( let c = 0; c < 5; c++ ) {
+			let char1 = 0;
+			for( let r = 0; r < 8; r++ ) {
+				if(this.data[r * this.columns + c]) {
+					char1 += 1 << r;
+				}
 			}
 
-			let str = char.toString(16).toUpperCase();
-			if (str.length === 0) {
-				str = "00";
-			} else if (str.length === 1) {
-				str = "0" + str;
+			out += "0x" + char1.toString(16).padStart(2, "0") + ", ";
+		}
+
+		return out;
+	}
+
+	private exportHexBlob9x16(): string {
+		let out = "";
+		for( let c = 0; c < 9; c++ ) {
+			let char1 = 0;
+			for( let r = 0; r < 8; r++ ) {
+				if(this.data[r * this.columns + c]) {
+					char1 += 1 << r;
+				}
 			}
 
-			out += "0x" + str + ", ";
+			out += "0x" + char1.toString(16).padStart(2, "0") + ", ";
+		}
+
+		for( let c = 0; c < 9; c++ ) {
+			let char1 = 0;
+			for( let r = 8; r < 16; r++ ) {
+				if(this.data[r * this.columns + c]) {
+					char1 += 1 << (r - 8);
+				}
+			}
+
+			out += "0x" + char1.toString(16).padStart(2, "0") + ", ";
+		}
+
+		return out;
+	}
+
+	public exportHexBlob(): string {
+		let out = "";
+		switch (this.columns) {
+			// this is a hack - it works for now
+			case 5:
+				out = this.exportHexBlob5x8();
+				break;
+			case 9:
+				out = this.exportHexBlob9x16();
+				break;
+			default:
+				throw new Error('Invalid glyph size');
 		}
 
 		return "{" + out.replace(/, $/, "") + "}";
