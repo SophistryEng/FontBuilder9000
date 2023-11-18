@@ -58,6 +58,11 @@ export const init = (async (root: HTMLElement) => {
 				ta.readOnly = true;
 				ta.value = collection.exportHexBlob(size.rows, size.columns);
 
+				ta.addEventListener('click', () => {
+					ta.select();
+					navigator.clipboard.writeText(ta.value);
+				});
+
 				outputElm.appendChild(ta);
 			}
 		}, 800);
