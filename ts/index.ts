@@ -178,3 +178,7 @@ export const init = (async (root: HTMLElement) => {
 
 });
 
+window.addEventListener('load', () => {
+	init(document.body);
+});
+
