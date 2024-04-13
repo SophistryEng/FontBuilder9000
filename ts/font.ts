@@ -35,10 +35,10 @@ export class Glyph {
 
 	private exportHexBlob5x8(): string {
 		let out = "";
-		for( let c = 0; c < 5; c++ ) {
+		for (let c = 0; c < 5; c++) {
 			let char1 = 0;
-			for( let r = 0; r < 8; r++ ) {
-				if(this.data[r * this.columns + c]) {
+			for (let r = 0; r < 8; r++) {
+				if (this.data[r * this.columns + c]) {
 					char1 += 1 << r;
 				}
 			}
@@ -49,12 +49,28 @@ export class Glyph {
 		return out;
 	}
 
+	private importHexBlob5x8(data: string) {
+		let myregexp = /0x([0-9a-f]{2})/ig;
+		let match = myregexp.exec(data);
+		let i = 0;
+		while (match != null) {
+			const value = parseInt(match[1], 16);
+			for (let r = 0; r < 8; r++) {
+				this.data[r * this.columns + i] = !!(value & (1 << r));
+			}
+			i++;
+			match = myregexp.exec(data);
+		}
+
+		this.updateEmitter.trigger();
+	}
+
 	private exportHexBlob9x16(): string {
 		let out = "";
-		for( let c = 0; c < 9; c++ ) {
+		for (let c = 0; c < 9; c++) {
 			let char1 = 0;
-			for( let r = 0; r < 8; r++ ) {
-				if(this.data[r * this.columns + c]) {
+			for (let r = 0; r < 8; r++) {
+				if (this.data[r * this.columns + c]) {
 					char1 += 1 << r;
 				}
 			}
@@ -62,10 +78,10 @@ export class Glyph {
 			out += "0x" + char1.toString(16).padStart(2, "0") + ", ";
 		}
 
-		for( let c = 0; c < 9; c++ ) {
+		for (let c = 0; c < 9; c++) {
 			let char1 = 0;
-			for( let r = 8; r < 16; r++ ) {
-				if(this.data[r * this.columns + c]) {
+			for (let r = 8; r < 16; r++) {
+				if (this.data[r * this.columns + c]) {
 					char1 += 1 << (r - 8);
 				}
 			}
@@ -74,6 +90,35 @@ export class Glyph {
 		}
 
 		return out;
+	}
+
+	private importHexBlob9x16(data: string) {
+		let myregexp = /0x([0-9a-f]{2})/ig;
+		let match = myregexp.exec(data);
+		let i = 0;
+
+		// First set of 9 bytes for the first 8 rows
+		while (match != null && i < 9) {
+			const value = parseInt(match[1], 16);
+			for (let r = 0; r < 8; r++) {
+				this.data[r * this.columns + i] = !!(value & (1 << r));
+			}
+			i++;
+			match = myregexp.exec(data);
+		}
+
+		// Start the second set of 9 bytes for the second 8 rows from the current position
+		i = 0; // reset i for the second block of data
+		while (match != null && i < 9) {
+			const value = parseInt(match[1], 16);
+			for (let r = 8; r < 16; r++) {
+				this.data[r * this.columns + i] = !!(value & (1 << (r - 8)));
+			}
+			i++;
+			match = myregexp.exec(data);
+		}
+
+		this.updateEmitter.trigger();
 	}
 
 	public exportHexBlob(): string {
@@ -91,6 +136,20 @@ export class Glyph {
 		}
 
 		return "{" + out.replace(/, $/, "") + "}";
+	}
+
+	public importHexBlob(data: string) {
+		switch (this.columns) {
+			// this is a hack - it works for now
+			case 5:
+				this.importHexBlob5x8(data);
+				break;
+			case 9:
+				this.importHexBlob9x16(data);
+				break;
+			default:
+				throw new Error('Invalid glyph size');
+		}
 	}
 
 	public clear() {
@@ -230,7 +289,7 @@ export class CharCollection {
 
 		x.forEach((charText: string, code: number) => {
 			if (!this.chars[code]) {
-				console.log('adding uknown char: ', code);
+				console.log('adding unknown char: ', code);
 				this.add(new Char(code));
 			}
 
@@ -246,6 +305,29 @@ export class CharCollection {
 		}
 
 		return output.replace(/,\n$/, "");
+	}
+
+	public importHexBlob(data: string) {
+		const myregexp = /{([^}]+)}/ig;
+		let match = myregexp.exec(data);
+		let i = 0;
+		while (match != null) {
+			const value = match[1];
+
+			const size = value.split(',').length;
+			// todo: this is gross
+			if (size === 18) {
+				console.log('importing 9x16');
+				this.chars[i].getGlyph(16, 9).importHexBlob(value);
+			} else if (size === 5) {
+				console.log('importing 5x8');
+				this.chars[i].getGlyph(8, 5).importHexBlob(value);
+			} else {
+				throw new Error('Invalid glyph size ' + size);
+			}
+			i++;
+			match = myregexp.exec(data);
+		}
 	}
 
 	public clear() {

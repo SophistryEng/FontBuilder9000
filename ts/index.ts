@@ -1,3 +1,4 @@
+import { ImportModal } from "./Import";
 import { ASCII } from "./ascii"
 import { Char, CharCollection } from "./font";
 import { EditableGlyphTable, GlyphTable } from "./table";
@@ -131,6 +132,14 @@ export const init = (async (root: HTMLElement) => {
 	});
 
 	header.appendChild(clearButton);
+
+	const importButton = document.createElement('button');
+	importButton.appendChild(document.createTextNode('Import'));
+	const im = new ImportModal(collection);
+	document.body.appendChild(im.getContainer());
+	importButton.addEventListener('click', () => { im.show(); });
+
+	header.appendChild(importButton);
 
 	const previewElm = document.createElement('div');
 	previewElm.className = 'root-preview';
