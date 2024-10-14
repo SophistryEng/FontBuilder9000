@@ -50,7 +50,7 @@ export class Glyph {
 	}
 
 	private importHexBlob5x8(data: string) {
-		let myregexp = /0x([0-9a-f]{2})/ig;
+		const myregexp = /0x([0-9a-f]{2})/ig;
 		let match = myregexp.exec(data);
 		let i = 0;
 		while (match != null) {
@@ -93,7 +93,7 @@ export class Glyph {
 	}
 
 	private importHexBlob9x16(data: string) {
-		let myregexp = /0x([0-9a-f]{2})/ig;
+		const myregexp = /0x([0-9a-f]{2})/ig;
 		let match = myregexp.exec(data);
 		let i = 0;
 

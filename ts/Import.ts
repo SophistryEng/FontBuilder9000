@@ -6,14 +6,14 @@ export class ImportModal extends AbstractBaseController<HTMLDialogElement> {
 	private input = document.createElement("textarea");
 
 	private importButton = (() => {
-		let elm = document.createElement("button");
+		const elm = document.createElement("button");
 		elm.textContent = "Import";
 
 		return elm;
 	})();
 
 	private hideButton = (() => {
-		let elm = document.createElement("button");
+		const elm = document.createElement("button");
 		elm.textContent = "Close";
 
 		return elm;
@@ -38,7 +38,7 @@ export class ImportModal extends AbstractBaseController<HTMLDialogElement> {
 			let subject = this.input.value;
 			subject = subject.replace(/\s*\/\/.*/g, "");
 			charCollection.importHexBlob(subject);
-			
+
 			this.container.close();
 		});
 	}
