@@ -4,8 +4,7 @@ export default {
   input: 'ts/index.ts',
   output: {
     file: 'main.js',
-    format: 'iife',
-    name: 'fontbuilder',
+    format: 'es',
   },
   plugins: [
     typescript(),
