@@ -10,7 +10,7 @@ export class Glyph {
 	constructor(
 		public readonly rows: number,
 		public readonly columns: number,
-		data: boolean[] = new Array(rows * columns).fill(false),
+		data: boolean[] = Array.from({ length: rows * columns }, () => false),
 	) {
 		this.setData(data);
 	}
@@ -153,7 +153,7 @@ export class Glyph {
 	}
 
 	public clear() {
-		this.setData(new Array(this.rows * this.columns).fill(false));
+		this.setData(Array.from({ length: this.rows * this.columns }, () => false));
 	}
 }
 
