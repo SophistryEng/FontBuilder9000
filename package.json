@@ -9,6 +9,9 @@
   },
   "author": "Jesse G. Donat",
   "license": "MIT",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",
     "oxlint": "^1.70.0",
