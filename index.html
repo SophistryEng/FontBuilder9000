@@ -7,7 +7,10 @@
 	<link rel="stylesheet" href="style/style.css" type="text/css" media="screen,print" />
 	<script type="module">
 		import { init } from './main.js';
-		init(document.querySelector('body'));
+
+		document.addEventListener('DOMContentLoaded', () => {
+			void init(document.body);
+		});
 	</script>
 </head>
 
