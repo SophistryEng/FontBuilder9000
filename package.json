@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "sass scss:style && rollup -c",
-    "lint": "oxlint"
+    "lint": "oxlint -c oxlint.config.ts"
   },
   "author": "Jesse G. Donat",
   "license": "MIT",
